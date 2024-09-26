@@ -6,29 +6,32 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
 import java.util.logging.Level;
-// import io.github.bonigarcia.wdm.WebDriverManager;
-import demo.wrappers.Wrappers;
+
+import demo.wrappers.GoogleForms;
 
 public class TestCases {
     ChromeDriver driver;
 
     /*
-     * TODO: Write your tests here with testng @Test annotation. 
-     * Follow `testCase01` `testCase02`... format or what is provided in instructions
+     * TODO: Write your tests here with testng @Test annotation.
+     * Follow `testCase01` `testCase02`... format or what is provided in
+     * instructions
      */
 
-     
     /*
-     * Do not change the provided methods unless necessary, they will help in automation and assessment
+     * Do not change the provided methods unless necessary, they will help in
+     * automation and assessment
      */
     @BeforeTest
-    public void startBrowser()
-    {
+    public void startBrowser() {
         System.setProperty("java.util.logging.config.file", "logging.properties");
 
         // NOT NEEDED FOR SELENIUM MANAGER
@@ -42,16 +45,37 @@ public class TestCases {
         options.setCapability("goog:loggingPrefs", logs);
         options.addArguments("--remote-allow-origins=*");
 
-        System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY, "build/chromedriver.log"); 
+        System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY, "build/chromedriver.log");
 
         driver = new ChromeDriver(options);
 
         driver.manage().window().maximize();
     }
 
+    @Test
+    public void testCase01() throws InterruptedException {
+        // GoogleForms googleform = new GoogleForms(driver);
+        GoogleForms googleform = new GoogleForms(driver);
+        driver.get(
+                "https://docs.google.com/forms/d/e/1FAIpQLSep9LTMntH5YqIXa5nkiPKSs283kdwitBBhXWyZdAS-e4CxBQ/viewform"); // Replace
+                                                                                                                        // with
+       WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("/viewform")); 
+        //Thread.sleep(3000);
+        // Google
+        // Form
+        // URL
+        googleform.EnterDetails();
+        googleform.FindDate();
+        googleform.LocalTime("07", "30");
+        googleform.clickSubmit();
+        wait.until(ExpectedConditions.urlContains("/formResponse")); 
+        //Thread.sleep(2000);
+        googleform.successmsgDisplay();
+    }
+
     @AfterTest
-    public void endTest()
-    {
+    public void endTest() {
         driver.close();
         driver.quit();
 
